@@ -1,5 +1,6 @@
 playground/
 flo.js
+public/js/bundle.js
 # Logs
 logs
 *.log

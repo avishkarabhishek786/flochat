@@ -27,14 +27,22 @@ io.on('connection', (socket)=>{
         console.log(`User was disconnected.`);
     })
 
-    socket.emit('newUser', {
+    socket.emit('newMessage', {
         from: "Admin",
-        text: "Welcome to FLOChat"
+        msg: "Hi there, Welcome to Flochat!"
     })
 
-    socket.broadcast.emit('newUser', {
+    socket.broadcast.emit('newMessage', {
         from: "Admin",
-        text: "New User joined"
+        msg: "New User joined"
+    })
+
+    socket.on('createMessage', (message, callback)=>{
+        io.emit('newMessage', {
+            from: message.from,
+            msg: message.msg
+        })
+        callback('This is form the server.')
     })
 
 })
