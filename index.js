@@ -3,6 +3,7 @@ const http = require('http')
 const express = require('express');
 const socketIO = require('socket.io')
 const routes = require('./routes');
+let {messageObject, messageLocationObject} = require('./public/js/utils.js')
 
 const port = process.env.PORT || 5001;
 
@@ -44,6 +45,12 @@ io.on('connection', (socket)=>{
         })
         callback('This is form the server.')
     })
+
+    // geo location
+  socket.on('createLocationMesssage', (coords, callback)=> {
+    io.emit('newLocationMessage', messageLocationObject('Admin', coords.latitude, coords.longitude))
+    callback("Location cordinates delivered.") // You must pass a function as second arg in socket.emit() if callback is used here
+  });
 
 })
 
