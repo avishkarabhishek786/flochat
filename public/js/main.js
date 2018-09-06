@@ -27,8 +27,9 @@ socket.on('disconnect', ()=>{
 });
 
 socket.on('newMessage', (msg)=>{
+    console.log(msg);
     var li = $('<li></li>');
-    li.text(`${msg.from}: ${msg.msg}`);
+    li.text(`${msg.from} ${msg.createdAt}: ${msg.text}`);
     $("#chat-ul").append(li);
 });
 
@@ -62,7 +63,6 @@ $(document).on('click', '#geo-btn', function() {
     btn.attr('disabled', 'disabled').text('Sending...');
     navigator.geolocation.getCurrentPosition(function(position) {
       btn.removeAttr('disabled').text('Send location');
-      console.log(position);
       var latitude  = position.coords.latitude;
       var longitude = position.coords.longitude;
   
@@ -74,7 +74,8 @@ $(document).on('click', '#geo-btn', function() {
       });
   
     }, function(e) {
-      console.log("Unable to fetch location.");
+      alert("Unable to fetch location.");
+      btn.removeAttr('disabled').text('Send location');
     });
   
   });

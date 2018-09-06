@@ -28,29 +28,21 @@ io.on('connection', (socket)=>{
         console.log(`User was disconnected.`);
     })
 
-    socket.emit('newMessage', {
-        from: "Admin",
-        msg: "Hi there, Welcome to Flochat!"
-    })
+    socket.emit('newMessage', messageObject("Admin", "Hi there, Welcome to Flochat!"))
 
-    socket.broadcast.emit('newMessage', {
-        from: "Admin",
-        msg: "New User joined"
-    })
+    socket.broadcast.emit('newMessage', messageObject("Admin", "New User joined"))
 
     socket.on('createMessage', (message, callback)=>{
-        io.emit('newMessage', {
-            from: message.from,
-            msg: message.msg
-        })
+        io.emit('newMessage', 
+        messageObject(message.from, message.msg),
         callback('This is form the server.')
-    })
+    )})
 
     // geo location
-  socket.on('createLocationMesssage', (coords, callback)=> {
-    io.emit('newLocationMessage', messageLocationObject('Admin', coords.latitude, coords.longitude))
-    callback("Location cordinates delivered.") // You must pass a function as second arg in socket.emit() if callback is used here
-  });
+    socket.on('createLocationMesssage', (coords, callback)=> {
+        io.emit('newLocationMessage', messageLocationObject('Admin', coords.latitude, coords.longitude))
+        callback("Location cordinates delivered.") // You must pass a function as second arg in socket.emit() if callback is used here
+    });
 
 })
 
