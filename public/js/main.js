@@ -13,9 +13,12 @@ function scrollToBottom() {
     var newMessagesHeight = newMessage.innerHeight();
     var lastMessageHeight = newMessage.prev().innerHeight();
   
-    if(clientHeight + scrollTop + newMessagesHeight + lastMessageHeight >= scrollHeight) {
-      messages.scrollTop(scrollHeight);
-    }
+    if(clientHeight + scrollTop + newMessagesHeight + lastMessageHeight >= scrollHeight -100) {
+        // console.log(clientHeight + scrollTop + newMessagesHeight + lastMessageHeight);
+        // console.log(scrollHeight -100);
+        // console.log("scroll");
+        messages.scrollTop(scrollHeight);
+    } else {console.log("dont scroll");}
 }
 
 socket.on('connect', ()=>{
@@ -27,10 +30,10 @@ socket.on('disconnect', ()=>{
 });
 
 socket.on('newMessage', (msg)=>{
-    console.log(msg);
     var li = $('<li></li>');
     li.text(`${msg.from} ${msg.createdAt}: ${msg.text}`);
     $("#chat-ul").append(li);
+    scrollToBottom();
 });
 
 $(document).on('click', '#btn-chat', function(e) {
@@ -51,7 +54,7 @@ $(document).on('click', '#btn-chat', function(e) {
 socket.on('newLocationMessage', function(pos) {
     console.log("newLocationMessage", pos);
     $('#chat-ul').append(`<li>${pos.from} ${pos.createdAt}: <a href="${pos.map}" target="_blank">Google location</li>`);
-   //scrollToBottom();
+    scrollToBottom();
   });
 
 $(document).on('click', '#geo-btn', function() {
