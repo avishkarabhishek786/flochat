@@ -11,4 +11,12 @@ router.get('/', (req, res)=>{
     })
 })
 
+router.get('/chat-room', (req, res)=>{
+    res.render('chat.ejs', {
+        data: {},
+        errors: {},
+        title: "Flochat | Home"
+    })
+})
+
 module.exports = router

@@ -18,4 +18,9 @@ let messageLocationObject = (from, lat, long)=>{
   }
 }
 
-module.exports = {messageObject, messageLocationObject}
+var isString = (str)=>{
+    return typeof str === 'string' && str.trim().length > 0;
+}
+  
+
+module.exports = {messageObject, messageLocationObject, isString}

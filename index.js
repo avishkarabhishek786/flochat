@@ -3,7 +3,7 @@ const http = require('http')
 const express = require('express');
 const socketIO = require('socket.io')
 const routes = require('./routes');
-let {messageObject, messageLocationObject} = require('./public/js/utils.js')
+let {messageObject, messageLocationObject, isString} = require('./public/js/utils.js')
 
 const port = process.env.PORT || 5001;
 
@@ -26,6 +26,13 @@ io.on('connection', (socket)=>{
 
     socket.on('disconnect', ()=>{
         console.log(`User was disconnected.`);
+    })
+
+    socket.on('join', (params, callback)=>{
+        if (!isString(params.name, params.room)) {
+            callback('Please provide your name and room name.')
+        }
+        callback()
     })
 
     socket.emit('newMessage', messageObject("Admin", "Hi there, Welcome to Flochat!"))

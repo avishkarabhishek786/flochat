@@ -16878,8 +16878,33 @@ function scrollToBottom() {
     } else {console.log("dont scroll");}
 }
 
-socket.on('connect', ()=>{
+function deparam(uri){
+    if(uri === undefined){
+      uri = window.location.search;
+    }
+    var queryString = {};
+    uri.replace(
+      new RegExp(
+        "([^?=&]+)(=([^&#]*))?", "g"),
+        function($0, $1, $2, $3) {
+        	queryString[$1] = decodeURIComponent($3.replace(/\+/g, '%20'));
+        }
+      );
+      return queryString;
+};
+
+socket.on('connect', function() {
     console.log(`Connected to server`);
+    var params = deparam(window.location.search);
+
+    socket.emit('join', params, function(err) {
+        if (err) {
+            alert(err);
+            window.location.href = '/';
+        } else {
+            console.log("success");
+        }
+    });
 });
 
 socket.on('disconnect', ()=>{

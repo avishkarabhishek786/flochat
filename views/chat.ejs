@@ -1,0 +1,30 @@
+<% include partials/header.ejs %>
+        
+<div class="container">
+        <div class="mb-5"></div>  
+	<div class="row">
+		<div class="col-md-8 chat__main">
+
+			<ol id="chat-ul" class="chat__messages"></ol>
+
+			<nav class="navbar fixed-bottom navbar-light bg-light">
+					<div class="chat__footer">
+							<input type="text" class="form-control" id="text-msg" placeholder="Your message" size="65" autofocus autocomplete="off">
+							<button type="submit" id="btn-chat" class="btn btn-primary">Send Message</button>
+							<button id="geo-btn" class="btn btn-warning">Send Location</button>
+					</div>
+			</nav>
+			
+		</div>
+
+		<div class="col-md-4">
+				<div class="chat__sidebar">
+					<h3>People</h3>
+					<div id="users"></div>
+				</div>
+		</div>
+
+	</div>
+</div>
+        
+<% include partials/footer.ejs %>
