@@ -69,15 +69,24 @@ io.on('connection', (socket)=>{
     })
 
     socket.on('createMessage', (message, callback)=>{
-        io.emit('newMessage', 
-        messageObject(message.from, message.msg),
-        callback('This is form the server.')
-    )})
+        var user = users.getUser(socket.id)
+
+        if (user && isString(message.msg)) {
+            io.to(user.room).emit('newMessage', messageObject(user.name, message.msg))            
+        }
+
+        callback()
+    })
 
     // geo location
     socket.on('createLocationMesssage', (coords, callback)=> {
-        io.emit('newLocationMessage', messageLocationObject('Admin', coords.latitude, coords.longitude))
-        callback("Location cordinates delivered.") // You must pass a function as second arg in socket.emit() if callback is used here
+        var user = users.getUser(socket.id)
+
+        if (user) {
+            io.to(user.room).emit('newLocationMessage', messageLocationObject(user.name, coords.latitude, coords.longitude))    
+        }
+
+        callback() // You must pass a function as second arg in socket.emit() if callback is used here
     });
 
 })

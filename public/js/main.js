@@ -78,10 +78,8 @@ $(document).on('click', '#btn-chat', function(e) {
     var text = textbox.val();
     
     socket.emit('createMessage', {
-        from: 'ChatUser',
         msg: text
     }, function(res) {
-        console.log("Response from server: ", res);
         textbox.val('');
     });
 });
