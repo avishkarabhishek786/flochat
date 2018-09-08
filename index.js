@@ -2,6 +2,7 @@ const path = require('path');
 const http = require('http')
 const express = require('express');
 const socketIO = require('socket.io')
+const _ = require('lodash')
 const routes = require('./routes');
 let {messageObject, messageLocationObject, isString} = require('./public/js/utils.js')
 
@@ -29,15 +30,27 @@ io.on('connection', (socket)=>{
     })
 
     socket.on('join', (params, callback)=>{
+
+        // Check if the room so specified is a string or not
         if (!isString(params.name, params.room)) {
             callback('Please provide your name and room name.')
         }
+
+        let name = _.trim(params.name)
+        let room = _.trim(params.room)
+
+        // Join a room
+        socket.join(room)
+
+        // Notify the new user 
+        socket.emit('newMessage', messageObject("Admin", `Hi ${name}, Welcome to Flochat!`))
+
+        // Notify rest users but the new user
+        socket.broadcast.to(room).emit('newMessage', messageObject("Admin", `${name} has joined.`))
+        
+        // custom callback
         callback()
     })
-
-    socket.emit('newMessage', messageObject("Admin", "Hi there, Welcome to Flochat!"))
-
-    socket.broadcast.emit('newMessage', messageObject("Admin", "New User joined"))
 
     socket.on('createMessage', (message, callback)=>{
         io.emit('newMessage', 
