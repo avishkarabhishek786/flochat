@@ -4,7 +4,8 @@ const express = require('express');
 const socketIO = require('socket.io')
 const _ = require('lodash')
 const routes = require('./routes');
-let {messageObject, messageLocationObject, isString} = require('./public/js/utils.js')
+const {messageObject, messageLocationObject, isString} = require('./public/js/utils.js')
+const {Users} = require('./classes/users')
 
 const port = process.env.PORT || 5001;
 
@@ -13,6 +14,8 @@ const app = express();
 const server = http.createServer(app)
 
 const io = socketIO(server)
+
+const users = new Users()
 
 const middleware = [
     express.static(path.join(__dirname, 'public'))
@@ -23,17 +26,12 @@ app.use(middleware)
 app.use('/', routes);
 
 io.on('connection', (socket)=>{
-    console.log(`New user connected`);
-
-    socket.on('disconnect', ()=>{
-        console.log(`User was disconnected.`);
-    })
 
     socket.on('join', (params, callback)=>{
 
         // Check if the room so specified is a string or not
         if (!isString(params.name, params.room)) {
-            callback('Please provide your name and room name.')
+           return callback('Please provide your name and room name.')
         }
 
         let name = _.trim(params.name)
@@ -41,6 +39,15 @@ io.on('connection', (socket)=>{
 
         // Join a room
         socket.join(room)
+
+        // Remove the user from all the rooms first
+        users.removeUser(socket.id)
+
+        // Add the user to the users list
+        users.addUser(socket.id, name, room)
+
+        // Update the users list
+        io.to(room).emit('updateUsersList', users.getUsersList(params.room))
 
         // Notify the new user 
         socket.emit('newMessage', messageObject("Admin", `Hi ${name}, Welcome to Flochat!`))
@@ -50,6 +57,15 @@ io.on('connection', (socket)=>{
         
         // custom callback
         callback()
+    })
+
+    socket.on('disconnect', ()=>{
+        let user = users.removeUser(socket.id)
+
+        if (user) {
+            io.to(user.room).emit('updateUsersList', users.getUsersList(user.room))
+            io.to(user.room).emit('newMessage', messageObject('Admin', `${user.name} has left.`))
+        }
     })
 
     socket.on('createMessage', (message, callback)=>{

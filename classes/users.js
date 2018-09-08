@@ -4,13 +4,13 @@ class Users {
         this.users = [];
     } 
 
-    addUser = (id, name, room) => {
+    addUser(id, name, room) {
         var user = {id, name, room}
         this.users.push(user)
         return user
     }
 
-    removeuser = (id) => {
+    removeUser(id) {
         var user = this.getUser(id)
 
         if (user) {
@@ -20,17 +20,16 @@ class Users {
         return user
     }
 
-    getUser = (id) => {
+    getUser(id) {
         return this.users.filter(user=>user.id===id)[0]
     }
 
-    getUsersList = (room) => {
+    getUsersList(room) {
         var users = this.users.filter(user=> user.room==room)
         var namesArray = users.map(user=>user.name)
         return namesArray
     }
-
-
+    
 }
 
 module.exports = {Users}

@@ -37,7 +37,7 @@ function deparam(uri){
 };
 
 socket.on('connect', function() {
-    console.log(`Connected to server`);
+
     var params = deparam(window.location.search);
 
     socket.emit('join', params, function(err) {
@@ -45,7 +45,7 @@ socket.on('connect', function() {
             alert(err);
             window.location.href = '/';
         } else {
-            console.log("success");
+            // User joins the room
         }
     });
 });
@@ -53,6 +53,16 @@ socket.on('connect', function() {
 socket.on('disconnect', ()=>{
     console.log(`Disconnected from server`);
 });
+
+socket.on('updateUsersList', function(users) {
+    var ol = jQuery('<ol></ol>');
+    users.forEach(function(user) {
+        ol.append(jQuery('<li></li>').text(user))
+    });
+
+    jQuery('#users').html(ol)
+
+}); 
 
 socket.on('newMessage', (msg)=>{
     var li = $('<li></li>');
@@ -77,7 +87,6 @@ $(document).on('click', '#btn-chat', function(e) {
 });
 
 socket.on('newLocationMessage', function(pos) {
-    console.log("newLocationMessage", pos);
     $('#chat-ul').append(`<li>${pos.from} ${pos.createdAt}: <a href="${pos.map}" target="_blank">Google location</li>`);
     scrollToBottom();
   });
